@@ -104,7 +104,9 @@ jobs:
       LANGSMITH_ENDPOINT: ${{ secrets.LANGSMITH_ENDPOINT }}
       LANGSMITH_API_KEY: ${{ secrets.LANGSMITH_API_KEY }}
       LANGSMITH_PROJECT: ${{ secrets.LANGSMITH_PROJECT }}
-      TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+      INDEX_NAME: ${{ secrets.INDEX_NAME }}
+      PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
+
 
     steps:
       - uses: actions/checkout@v4
