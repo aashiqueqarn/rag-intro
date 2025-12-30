@@ -123,6 +123,10 @@ jobs:
         run: |
           uv sync --locked
 
+      - name: Execute ingestion.py
+        run: |
+          uv run python ingestion.py
+
       - name: Execute main.py
         run: |
           uv run python main.py
