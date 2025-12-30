@@ -70,5 +70,3 @@ if __name__ == "__main__":
     result_without_lcel = retrieval_chain_without_lcel(user_query)
     print("\n Answer:")
     print(result_without_lcel)
-
-
