@@ -1,6 +1,10 @@
 import os
+from operator import itemgetter
+
 from dotenv import load_dotenv
+from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import RunnablePassthrough
 from langchain_core.messages import HumanMessage
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_pinecone import PineconeVectorStore
@@ -51,6 +55,29 @@ def retrieval_chain_without_lcel(query: str) -> str:
     # Step 5: Return the content
     return response.content
 
+def retrieval_chain_with_lcel():
+    """
+    Create a retrieval chain using LCEL(Langchain Expression Language),
+    Returns a chain that can be invoked with {"question": "..."}
+
+    Advantages over non-LCEL approach:
+    - Declarative and composable: Easy to chain operations with pipe operator (|)
+    - Built-in streaming: chain.stream() works out of the box
+    - Built-in async: chain.ainvoke() and chain.astream() available
+    - Batch processing: chain.invoke_batch() for multiple inputs
+    - Type safety: Better integration with LangChain's type system
+    - Less code: More concise and readable
+    - Reusable: Chain can be saved and shared and composed with other chains
+    - Better debugging: Langchain provides better observability tools
+    """
+
+    retrieval_chain = (
+        RunnablePassthrough.assign(context=itemgetter("question") | retriever | format_docs) |
+        prompt_template | llm | StrOutputParser()
+    )
+    return retrieval_chain
+
+
 
 
 if __name__ == "__main__":
@@ -70,3 +97,11 @@ if __name__ == "__main__":
     result_without_lcel = retrieval_chain_without_lcel(user_query)
     print("\n Answer:")
     print(result_without_lcel)
+
+    print("\n" + "=" * 70)
+    print("IMPLEMENTATION 2: Implementation with LCEl - Better Approach")
+    print("=" * 70)
+    chain_with_lcel = retrieval_chain_with_lcel()
+    result_with_lcel = chain_with_lcel.invoke({"question": user_query})
+    print("\n Answer:")
+    print(result_with_lcel)
